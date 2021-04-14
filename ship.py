@@ -12,7 +12,7 @@ class Ship:
 
 		# Lead the ship image and get its rect.
 		# Cargando la imagen de ship
-		self.image = pygame.image.load("/images/ship.bmp")
+		self.image = pygame.image.load("images/ship.bmp")
 		# Con la image cargada, llamamos a get_rect para acceder
 		# Al atributo rect para pocisionar la nave.
 		self.rect = self.image.get_rect()
