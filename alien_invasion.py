@@ -2,6 +2,7 @@ import sys
 import pygame
 from settings import Settings
 from ship import Ship
+from character import Character
 
 class AlienInvasion:
 	"""Overall class to manage game assets and behavior."""
@@ -21,6 +22,7 @@ class AlienInvasion:
 		# Al agregarle self, Ship tiene acceso a la instancia de AlienInvation
 		# y tiene acceso a todos los metodos de AlienInvacion. 
 		self.ship = Ship(self)
+		self.character = Character(self)
 
 		# Set the background color.
 		# self.bg_color = (230, 230, 230)
@@ -59,6 +61,7 @@ class AlienInvasion:
 		"""Update images on the screen, and flip to the new screen."""
 		self.screen.fill(self.settings.bg_color)
 		self.ship.blitme()
+		self.character.blitm()
 
 		pygame.display.flip()
 
