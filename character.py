@@ -18,6 +18,6 @@ class Character:
 		self.rect.bottomright = (675, 800)
 
 
-	def blitm(self):
+	def blitme(self):
 		"""Draw the ship at its current location"""
 		self.screen.blit(self.image, self.rect)
