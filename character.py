@@ -15,7 +15,7 @@ class Character:
 		self.rect = self.image.get_rect()
 
 		# Posicionando al astronauta
-		self.rect.bottomright = (675, 800)
+		self.rect.bottomright = (675, self.screen.get_rect().height)
 
 
 	def blitme(self):
