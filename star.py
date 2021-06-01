@@ -2,7 +2,7 @@ import pygame
 from pygame.sprite import Sprite
 
 
-class Stars(Sprite):
+class Star(Sprite):
 	""" A class to grind stars all over the sky """
 
 	def __init__(self, ai_game):

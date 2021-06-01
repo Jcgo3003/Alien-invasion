@@ -5,6 +5,8 @@ from ship import Ship
 from character import Character
 from bullet import Bullet
 from alien import Alien
+from stars import Stars
+
 
 class AlienInvasion:
 	"""Overall class to manage game assets and behavior."""
@@ -31,6 +33,7 @@ class AlienInvasion:
 		self.ship = Ship(self)
 		self.bullets = pygame.sprite.Group()
 		self.character = Character(self)
+		self.stars = Stars(self)
 
 		self.aliens = pygame.sprite.Group()
 		self._create_fleet()
