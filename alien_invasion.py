@@ -5,7 +5,8 @@ from ship import Ship
 from character import Character
 from bullet import Bullet
 from alien import Alien
-from stars import Stars
+from star import Star
+from random import randint
 
 
 class AlienInvasion:
@@ -33,12 +34,43 @@ class AlienInvasion:
 		self.ship = Ship(self)
 		self.bullets = pygame.sprite.Group()
 		self.character = Character(self)
-		self.stars = Stars(self)
 
 		self.aliens = pygame.sprite.Group()
+		self.stars = pygame.sprite.Group()
 		self._create_fleet()
+		self._create_sky_stars()
 		# Set the background color.
 		# self.bg_color = (230, 230, 230)
+
+	def _create_sky_stars(self):
+		""" Create a grid of stars """
+		# Create a grid of stars
+		star = Star(self)
+		star_width, star_height = star.rect.size
+		
+		# Getting all the space diponible for the stars 
+		number_stars_x = self.settings.screen_width
+		
+
+		# Giving some space between the ground and the sky, one fifth from the ground will make it
+		available_space_y = self.settings.screen_height 
+		number_rows = available_space_y // (star_height * 2)
+
+		# Create a sky full of stars
+		for row_number in range(number_rows):
+			for star_number in range(number_stars_x):
+				# Create a star
+				self._create_star(star_number, row_number)
+
+
+	def _create_star(self, star_number, row_number):
+		""" Create a star """
+		star = Star(self)
+		star_width, star_height = star.rect.size
+		star.x = star_width + 2 * star_width * star_number
+		star.rect.x = star.x 
+		star.rect.y = star.rect.height + 2 * star.rect.height * row_number
+		self.stars.add(star)
 
 
 	def _create_fleet(self):
@@ -61,6 +93,9 @@ class AlienInvasion:
 			for alien_number in range(number_aliens_x):
 				# Create an alien and place it in the row.
 				self._create_alien(alien_number, row_number)
+
+	
+
 
 	def _create_alien(self, alien_number, row_number):
 		""" Create an alien and place it in the row. """
@@ -182,6 +217,7 @@ class AlienInvasion:
 			bullet.draw_bullet()
 
 		self.aliens.draw(self.screen)
+		self.stars.draw(self.screen)
 		self.character.blitme()
 
 		pygame.display.flip()
