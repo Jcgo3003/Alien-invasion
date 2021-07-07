@@ -16,4 +16,4 @@ class Alien(Sprite):
 		# Store the alien's exact horizontal position.
 		self.x = float(self.rect.x)
 
-		
+	

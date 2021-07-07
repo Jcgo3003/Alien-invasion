@@ -6,7 +6,7 @@ from character import Character
 from bullet import Bullet
 from alien import Alien
 from star import Star
-from random import randint
+import random
 
 
 class AlienInvasion:
@@ -38,40 +38,86 @@ class AlienInvasion:
 		self.aliens = pygame.sprite.Group()
 		self.stars = pygame.sprite.Group()
 		self._create_fleet()
-		self._create_sky_stars()
+		# self._create_sky_stars()
 		# Set the background color.
 		# self.bg_color = (230, 230, 230)
 
-	def _create_sky_stars(self):
-		""" Create a grid of stars """
+
+	def _create_sky_stars(self, alien_possitions, alien_width, alien_height):
+		""" Create a grid of stars and avoiding the aliens images """
 		# Create a grid of stars
 		star = Star(self)
 		star_width, star_height = star.rect.size
+
+		# Getting the space available
+		available_space_x = self.settings.screen_width
+
+		# Getting rid of 1/4 of the beginning of the screen
+		available_space_y = self.settings.screen_height 
 		
 		# Getting all the space diponible for the stars 
-		number_stars_x = self.settings.screen_width
-		
+		number_stars_x = self.settings.screen_width // (star_width * 3)
 
 		# Giving some space between the ground and the sky, one fifth from the ground will make it
-		available_space_y = self.settings.screen_height 
-		number_rows = available_space_y // (star_height * 2)
+		number_rows_stars = (available_space_y // star_height) // 3
+
 
 		# Create a sky full of stars
-		for row_number in range(number_rows):
+		x_list = []
+		y_list = []
+
+		for x, y in alien_possitions:
+			if x not in x_list:
+				x_list.append(x)
+			if y not in y_list:
+				y_list.append(y)
+
+
+		y = 0 
+
+		for row_number_star in range(number_rows_stars):
+			
+			# Reseting x
+			x = 0
+
+
 			for star_number in range(number_stars_x):
-				# Create a star
-				self._create_star(star_number, row_number)
+			# Create a star, only if its not on the alien way
+				star = Star(self)
+				star.rect.x = star_width + (star_width * 3) * star_number
+				star.rect.y = star.rect.height + 2 * star.rect.height * row_number_star
+
+				r = random.randint(0, 10)
 
 
-	def _create_star(self, star_number, row_number):
-		""" Create a star """
-		star = Star(self)
-		star_width, star_height = star.rect.size
-		star.x = star_width + 2 * star_width * star_number
-		star.rect.x = star.x 
-		star.rect.y = star.rect.height + 2 * star.rect.height * row_number
-		self.stars.add(star)
+				# Creating stars when there is not any alien, so a row of stars without interruption
+				if (star.rect.y < y_list[y] and not(r % 2)):
+					self.stars.add(star)
 
+
+				elif(star.rect.y > y_list[y] and star.rect.y < (y_list[y] + alien_height and not(r % 2))):
+					if (star.rect.x < x_list[x]):
+						self.stars.add(star)
+						
+
+					elif(star.rect.x > x_list[x] + alien_width and not(r % 2)):
+						self.stars.add(star)
+						x += 1 
+						if (x >= len(x_list)):
+							x = len(x_list) - 1
+							# self.stars.add(star)
+
+
+
+				# Creating a row of stars when there an alien ship on the way
+				elif (star.rect.y > (y_list[y] + alien_height) and not(r % 2)):
+					# Getting the next alien possition for y
+					y += 1
+					self.stars.add(star)
+					if y >= len(y_list):
+						y = len(y_list) - 1
+					
+	
 
 	def _create_fleet(self):
 		""" Create the fleet of aliens. """
@@ -88,13 +134,20 @@ class AlienInvasion:
 		number_rows = available_space_y // (2 * alien_height)
 
 
+		# Variable to save the alien possitions
+		alien_possitions = []
+
+
 		# Create the full fleet of aliens.
 		for row_number in range(number_rows):
-			for alien_number in range(number_aliens_x):
-				# Create an alien and place it in the row.
-				self._create_alien(alien_number, row_number)
 
-	
+			for alien_number in range(number_aliens_x):
+				# Create an alien and place it in the row, and saving then
+				alien_possitions.append(self._create_alien(alien_number, row_number))
+				
+
+		self._create_sky_stars(alien_possitions, alien_width, alien_height)
+
 
 
 	def _create_alien(self, alien_number, row_number):
@@ -105,6 +158,11 @@ class AlienInvasion:
 		alien.rect.x = alien.x
 		alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
 		self.aliens.add(alien)
+
+		# Sending the aliens possitions
+		return [alien.rect.x, alien.rect.y]
+
+
 
 
 
@@ -228,3 +286,11 @@ if __name__ == "__main__":
 	# Make a game instance, and run the game.
 	ai = AlienInvasion()
 	ai.run_game()
+
+
+
+""" He logrado varios avances con respecto de las estrellas,
+    Tengo que lograr que los espacios vacios donde no estan las 
+    nave alienigenas esten a reventar de estrellas y eventualmente
+    utilizar randint para hacer que paresca que aparecen y desaparesen
+    """ 
