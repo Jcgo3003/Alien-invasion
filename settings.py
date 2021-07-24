@@ -26,7 +26,7 @@ class Settings:
 		self.fleet_direction = 1
 
 		# Rain settings
-		self.rain_speed = 0.0
+		self.rain_speed = 1.0
 		self.rain_direction = 1
 
 		

@@ -174,32 +174,37 @@ class AlienInvasion:
 		available_space_x = self.settings.screen_width
 		number_raindrops = available_space_x // (3 * raindrop_width)
 
-		available_space_y = self.settings.screen_height 
-		number_rows = available_space_y // (3 * raindrop_height)
+		r = random.randint(0,100)
 
-		for row_number in range(number_rows):
+		if not (r % 90):
 
-			for raindrop_number in range(number_raindrops):
-				# Set some randomest
+			for x in range(number_raindrops):
 				r = random.randint(0, 100)
-				
+					
 				if not(r % 7):	
-					self._create_raindrops(raindrop_number, row_number)
+					self._create_raindrops(x)
 
 
-	def _create_raindrops(self, raindrop_number, row_number):
+	def _create_raindrops(self, x):
 		"""Create raindrops"""
 		raindrop = Raindrop(self)
 		raindrop_width, raindrop_height = raindrop.rect.size
-		raindrop.x = raindrop_width + 3 * raindrop_width * raindrop_number
+		raindrop.x = raindrop_width + 3 * raindrop_width * x
 		raindrop.rect.x = raindrop.x
-		raindrop.rect.y = raindrop_height + 3 * raindrop_height * row_number
+		raindrop.rect.y = raindrop.y 
+		# raindrop.rect.y = raindrop_height + 3 * raindrop_height * row_number
 
 		self.rain.add(raindrop)
 
 	def _update_rain(self):
 		""" Let's star the rain falling"""
 		self.rain.update()
+		self._create_rain()
+		# The horizon a few meters above the ground
+		horizon = 100
+		for raindrops in self.rain.copy():
+			if raindrops.rect.bottom == (self.settings.screen_height - horizon):
+				self.rain.remove(raindrops)
 
 
 	def run_game(self):
@@ -213,8 +218,10 @@ class AlienInvasion:
 			self.ship.update()
 			self._update_bullets()
 
+
 			self._update_aliens()
-			# self._update_rain()
+			self._update_rain()
+
 
 
 	def _check_events(self):
@@ -281,8 +288,7 @@ class AlienInvasion:
 		"""Update images on the screen, and flip to the new screen."""
 		self.screen.fill(self.settings.bg_color)
 		self.ship.blitme()
-		for bullet in self.bullets.sprites():
-			bullet.draw_bullet()
+		
 
 		self.aliens.draw(self.screen)
 		self.stars.draw(self.screen)
