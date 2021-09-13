@@ -54,6 +54,14 @@ class Ship:
 		# Por eso toma como parametros la imagen y su rectangulo con rect
 		self.screen.blit(self.image, self.rect)
 
+	def center_ship(self):
+		""" Center the ship on the screen """
+		self.rect.midbottom = self.screen_rect.midbottom
+		self.x = float(self.rect.x)
+
+
+
+
 # Pygame trata a todos los elementos como rectangulos, por eso rect
 # Aqui se esta tratando a la nave y a la pantalla como rectangulos
 # 
