@@ -45,6 +45,9 @@ class Settings:
 		# Fleet_direction of 1 represents right; -1 represents left. 
 		self.fleet_direction = 1
 
+		# Scoring 
+		self.alien_points = 50
+
 	def level_easy(self):
 		""" Initialize settings for a easy game """
 		self.ship_speed = 1.5
