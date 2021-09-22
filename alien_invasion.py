@@ -3,7 +3,7 @@ from time import sleep
 import pygame
 from settings import Settings
 from game_stats import GameStats
-from button import Button
+import button 
 from ship import Ship
 from character import Character
 from bullet import Bullet
@@ -45,8 +45,9 @@ class AlienInvasion:
 		self._create_fleet()
 		self._create_rain()
 
-		# Make the Play button.
-		self.play_button = Button(self, "Play")
+		# Make the Play button and initializing the level buttons
+		self.play_button = button.Button(self, "Play")
+		self.level_buttons = button.Level_Buttons(self)
 
 
 	def _ship_hit(self):
@@ -267,6 +268,7 @@ class AlienInvasion:
 			elif event.type == pygame.MOUSEBUTTONDOWN:
 				mouse_pos = pygame.mouse.get_pos()
 				self._check_play_button(mouse_pos)
+				self._check_level_buttons(mouse_pos)
 
 	def _start_game(self):
 		""" Star the game """
@@ -291,8 +293,29 @@ class AlienInvasion:
 		button_clicked = self.play_button.rect.collidepoint(mouse_pos)
 
 		if button_clicked and not self.stats.game_active:
+			self.settings.initialize_dynamic_settings()
 			self._start_game()
+
+
+	def _check_level_buttons(self, mouse_pos):
+		""" Setting the level of difficulty of the game """
+		# Level methods
+		button_clicked_easy = self.level_buttons.rect_easy.collidepoint(mouse_pos)
+		button_clicked_medium = self.level_buttons.rect_medium.collidepoint(mouse_pos)
+		button_clicked_hard = self.level_buttons.rect_hard.collidepoint(mouse_pos)
 			
+		# Getting the right settings for each level
+		if button_clicked_easy and not self.stats.game_active:
+			self.settings.level_easy()
+			self._start_game()
+
+		if button_clicked_medium and not self.stats.game_active:
+			self.settings.level_medium()
+			self._start_game()
+
+		if button_clicked_hard and not self.stats.game_active:
+			self.settings.level_hard()
+			self._start_game()
 
 	def _check_keydown_events(self, event):
 		""" Respond to keypresses"""
@@ -352,6 +375,7 @@ class AlienInvasion:
 			# Destroy exitsting bullets and create new fleet.
 			self.bullets.empty()
 			self._create_fleet()
+			self.settings.increase_speed()
 
 	def _check_aliens_bottom(self):
 		""" Check if any aliens have reached the bottob of the screen """
@@ -393,10 +417,10 @@ class AlienInvasion:
 		self.aliens.draw(self.screen)
 		self.character.blitme()
 		
-
 		# Drak the play button if the game is inactive
 		if not self.stats.game_active:
 			self.play_button.draw_button()
+			self.level_buttons.draw_level_buttons()
 
 		pygame.display.flip()
 
