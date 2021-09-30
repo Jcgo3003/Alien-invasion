@@ -302,7 +302,7 @@ class AlienInvasion:
 			self.stats.reset_stats()
 			self.stats.game_active = True
 			self.sb.prep_score()
-
+			self.sb.prep_level()
 
 	def _check_level_buttons(self, mouse_pos):
 		""" Setting the level of difficulty of the game """
@@ -378,8 +378,11 @@ class AlienInvasion:
 		collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
 
 		if collisions:
-			self.stats.score += self.settings.alien_points 
+
+			for aliens in collisions.values():
+				self.stats.score += self.settings.alien_points * len(aliens)
 			self.sb.prep_score()
+			self.sb.check_high_score()
 
 		# Check for empty groups and creating a new fleet
 		if not self.aliens:
@@ -387,6 +390,10 @@ class AlienInvasion:
 			self.bullets.empty()
 			self._create_fleet()
 			self.settings.increase_speed()
+			
+			# Increase level. 
+			self.stats.level += 1 
+			self.sb.prep_level()
 
 	def _check_aliens_bottom(self):
 		""" Check if any aliens have reached the bottob of the screen """
