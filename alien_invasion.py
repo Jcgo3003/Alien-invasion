@@ -34,6 +34,8 @@ class AlienInvasion:
 		self.stats = GameStats(self )
 		self.sb = Scoreboard(self)
 
+		
+
 		self.ship = Ship(self)
 		self.bullets = pygame.sprite.Group()
 		self.character = Character(self)
@@ -261,6 +263,7 @@ class AlienInvasion:
 		"""Respond to keypresses and mouse events."""
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
+				self.stats.savedata()
 				sys.exit()
 
 			elif event.type == pygame.KEYDOWN:
@@ -333,6 +336,7 @@ class AlienInvasion:
 
 		# Quiting with q
 		elif event.key == pygame.K_q:
+			self.stats.savedata()
 			sys.exit()
 
 		# Shoting
