@@ -30,11 +30,12 @@ class AlienInvasion:
 
 		pygame.display.set_caption("Alien Invasion")
 
-		# Create an instance to store game statistics and create a scoreboard.
+		# Create an instance to store game statistics, create a scoreboard.
 		self.stats = GameStats(self )
 		self.sb = Scoreboard(self)
 
-		
+		# Rendering all the score images
+		self.prep_images()
 
 		self.ship = Ship(self)
 		self.bullets = pygame.sprite.Group()
@@ -255,7 +256,8 @@ class AlienInvasion:
 				self._update_bullets()
 				self._update_aliens()
 				self._update_rain()
-				
+				self.prep_images()
+
 			self._update_screen()
 
 
@@ -304,8 +306,16 @@ class AlienInvasion:
 			# Reset the game statistics
 			self.stats.reset_stats()
 			self.stats.game_active = True
-			self.sb.prep_score()
-			self.sb.prep_level()
+
+			# Getting the score on screen
+			self.prep_images()
+
+	def prep_images(self):
+		""" A function to turning the score, high score and into a redered image"""
+		self.sb.prep_score()
+		self.sb.prep_level()
+		self.sb.prep_high_score()
+		
 
 	def _check_level_buttons(self, mouse_pos):
 		""" Setting the level of difficulty of the game """
@@ -382,12 +392,15 @@ class AlienInvasion:
 		collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
 
 		if collisions:
-
 			for aliens in collisions.values():
 				self.stats.score += self.settings.alien_points * len(aliens)
 			self.sb.prep_score()
 			self.sb.check_high_score()
 
+		self.start_new_level()
+
+	def start_new_level(self):
+		""" A function to start a new level """
 		# Check for empty groups and creating a new fleet
 		if not self.aliens:
 			# Destroy exitsting bullets and create new fleet.
@@ -457,8 +470,19 @@ if __name__ == "__main__":
 
 
 
-""" He logrado varios avances con respecto de las estrellas,
-    Tengo que lograr que los espacios vacios donde no estan las 
-    nave alienigenas esten a reventar de estrellas y eventualmente
-    utilizar randint para hacer que paresca que aparecen y desaparesen
-    """ 
+""" 14-6. Refactoring: 
+Look for methods that are doing more than one task, and refactor 
+them to organize your code and make it efficient. 
+
+For example 
+move some of the code in 
+-	_check_bullet_alien_collisions(), 
+	which starts a new level when the fleet of aliens has been destroyed, 
+	ato a function called start_new _level().  LISTO !!!!!
+
+-	Also, move the four separate method calls in the __init__() method in 
+Scoreboard to a method called prep_images(). 
+
+-   The prep_images() method could also help Simplify _check_play_button() or 
+	start _game(), any of the two of them.
+"""
